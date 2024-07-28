@@ -9,6 +9,21 @@ async function getPokemon(slug: string) {
   return data;
 }
 
+async function getPokemonsList(): Promise<{ name: string; url: string }[]> {
+  const response = await fetch(
+    "https://pokeapi.co/api/v2/pokemon?limit=50&offset=0"
+  );
+  const { results } = await response.json();
+  return results;
+}
+
+export async function generateStaticParams() {
+  const pokemons = await getPokemonsList();
+  return pokemons.map((pokemon) => ({
+    slug: pokemon.name,
+  }));
+}
+
 const PokemonPage = async ({ params }: any) => {
   const pokemon = await getPokemon(params.slug);
 
